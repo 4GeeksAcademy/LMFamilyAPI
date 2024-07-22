@@ -25,14 +25,14 @@ John = {
 Jane = {
     "first_name" : "Jane",
     "last_name" : jackson_family.last_name,
-    "age" : "35",
+    "age" : 35,
     "lucky_numbers": [10, 14, 3]
 }
 
 Jimmy = {
     "first_name" : "Jimmy",
     "last_name" : jackson_family.last_name,
-    "age" : "5",
+    "age" : 5,
     "lucky_numbers": [1]
 }
 
