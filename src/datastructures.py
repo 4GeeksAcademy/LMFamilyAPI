@@ -11,6 +11,7 @@ from random import randint
 class FamilyStructure:
     def __init__(self, last_name):
         self.last_name = last_name
+        self._next_id = 1
         # example list of members
         self._members = []
 
@@ -20,23 +21,19 @@ class FamilyStructure:
 
     def add_member(self, member):
         # fill this method and update the return
-        member["last_name"] = self.last_name
-        member["id"] = self._generateId()
-        member["lucky_numbers"] = list(member.get("lucky_numbers", set()))
+        if "id" not in member:
+            member["id"] = self._generateId()
         self._members.append(member)
-        return member
+        
 
     def delete_member(self, id):
         # fill this method and update the return
-        for position in range(len(self._members)):
-            if self._members[position]["id"] == id:
-                self._members.pop(position)
-                return None
+         self._members = [member for member in self._members if member ["id"] != id]
 
     def get_member(self, id):
         # fill this method and update the return
         for member in self._members:
-            if member["id"] == int(id):
+            if member["id"] == id:
                 return member
         return None
 

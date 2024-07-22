@@ -15,30 +15,14 @@ CORS(app)
 # create the jackson family object
 jackson_family = FamilyStructure("Jackson")
 
-John = {
-    "first_name" : "Jhon",
-    "last_name" : jackson_family.last_name,
-    "age": 33,
-    "lucky_numbers": [7, 13, 22]
-}
+first_members = [
+     {"first_name": "Jhon", "age": 33, "lucky_numbers": [7, 13, 22]},
+     {"first_name": "Jane", "age": 35, "lucky_numbers": [10, 14, 33]},
+     {"first_name": "Jimmy", "age": 5, "lucky_numbers": [1]}
+]
 
-Jane = {
-    "first_name" : "Jane",
-    "last_name" : jackson_family.last_name,
-    "age" : 35,
-    "lucky_numbers": [10, 14, 3]
-}
-
-Jimmy = {
-    "first_name" : "Jimmy",
-    "last_name" : jackson_family.last_name,
-    "age" : 5,
-    "lucky_numbers": [1]
-}
-
-jackson_family.add_member(Jimmy)
-jackson_family.add_member(Jane)
-jackson_family.add_member(John)
+for member in first_members:
+     jackson_family.add_member(member)
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -57,29 +41,30 @@ def get_all_members():
     members = jackson_family.get_all_members()
     return jsonify(members), 200
 
-@app.route('/member/<int:id>', methods=['GET'])
-def get_member(id):
-     member = jackson_family.get_member(id)
-     return jsonify(member), 200
+@app.route('/member/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+     member = jackson_family.get_member(member_id)
+     if member:
+          return jsonify(member), 200
+     else:
+          return jsonify({"message" : "Miembro no encontrado"}), 400
 
 @app.route('/member', methods=['POST'])
-def crear_miembro():
-        member = request.json
-        print("agregado", member)
-        jackson_family.add_member(member)
-        if member is not None: 
-             return "Miembro creado", 200
+def add_member():
+        body = request.get_json()
+        if not body:
+            return jsonify({"message": "Invalido"}), 400
+        jackson_family.add_member(body)
+        return jsonify({"message": "Miembro añadido"}), 200
 
-@app.route('/member/<int:id>', methods=['DELETE'])
-def delete_member(id):
-    member = jackson_family.get_member(id)
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    member = jackson_family.get_member(member_id)
     if member:
-          jackson_family.delete_member(id)
-          return jsonify({"mensaje": f"Miembro elimindado: {member}"}), 200 
+      jackson_family.delete_member(member_id)
+      return jsonify({"done": True }), 200
     else:
-          return jsonify({"error": "Miembro no encontrado"}), 404
-
-
+      return jsonify({"message" : "Miembro no encontrado"}), 404
 
 
 
